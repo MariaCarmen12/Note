@@ -1,33 +1,47 @@
-import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction } from "@remix-run/node";
-import {
-  Links,
-  LiveReload,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
+import { Links, LiveReload, Meta, Scripts } from '@remix-run/react';
+import { Grid, MantineProvider, createEmotionCache } from '@mantine/core';
+import { StylesPlaceholder } from '@mantine/remix';
+import { NavbarNested } from 'src/components/NavbarNested/NavbarNested';
+import { NavbarTypes } from 'src/components/NavbarTypes/NavbarTypes';
+import { Notes } from 'src/components/Note/Note';
+import { NoteProvider } from 'src/context/NoteContext';
 
-export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-];
+createEmotionCache({ key: 'mantine' });
+
+
+const AppState = ({children}:any) => {
+  return(
+ <NoteProvider>
+  {children}
+ </NoteProvider> 
+  )
+  }
 
 export default function App() {
+  
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <html lang="en">
+        <head>
+          <StylesPlaceholder />
+          <Meta />
+          
+          <Links />
+        </head>
+        <body>
+          <AppState>
+          <Grid>
+            <NavbarNested />
+            <NavbarTypes />
+            <Notes />
+          </Grid>
+          </AppState>
+       
+          <Scripts />
+          <LiveReload />
+        </body>
+      </html>
+    </MantineProvider>
   );
 }
+
